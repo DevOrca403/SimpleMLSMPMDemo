@@ -1,7 +1,12 @@
+# clion configuration files
 cmake-build-debug
+cmake-build-release
 .idea
 
+# vs configuration files
 .vs
 out
 
-/.commit_template
+.commit_template
+
+Externals/eigen
