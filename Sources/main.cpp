@@ -1,5 +1,4 @@
 #include <array>
-#include <filesystem>
 
 #include <Eigen/Dense>
 
@@ -9,8 +8,6 @@
 #include "particle_update.h"
 #include "particle_visualizer.h"
 #include "pg_transfer.h"
-
-namespace fs = std::filesystem;
 
 // material properties
 const float E = 0.8e4f;          // Young's Modulus
@@ -26,7 +23,7 @@ int main() {
     if(!pv.initialize()) {
         abort();
     }
-    if(!pv.load_shader(fs::path("ABSOLUTE PATH OF MLSMPMDEMO DIRECTORY") / fs::path("Sources/ShaderSrc"))) {
+    if(!pv.load_shader()) {
         abort();
     }
     pv.init_buffer();

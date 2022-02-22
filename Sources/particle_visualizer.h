@@ -19,7 +19,7 @@ class particle_visualizer {
 public:
     particle_visualizer() = default;
     bool initialize();
-    bool load_shader(const fs::path& _shader_dir);
+    bool load_shader();
     void init_buffer();
     template<class PositionIter, class ValueIter>
     void render(PositionIter _pos_begin, PositionIter _pos_end,

@@ -86,110 +86,61 @@ namespace internal {
     }
 }
 
-bool particle_visualizer::load_shader(const fs::path& _shader_dir) {
+bool particle_visualizer::load_shader() {
     std::cout << log_prefix(log_type::INFO) << "Load shaders\n";
 
-    // absolute path is recommended
-    if(_shader_dir.is_relative()) {
-        try {
-            std::cout << log_prefix(log_type::WARN) << "Absolute path is strongly recommended for shader loading\n"
-                      << "\tThe path is regarded as " << fs::canonical(_shader_dir).c_str() << "\n";
-        } catch(const std::system_error& e) {
-            std::cout << log_prefix(log_type::ERROR) << "Failed to read a shader directory\n"
-                      << "\t" << e.code() << ":" << e.what() << "\n";
-        }
-    }
-
-    // path validity check
-    if(!std::filesystem::is_directory(_shader_dir)) {
-        std::cout << log_prefix(log_type::ERROR) << "Failed to read a shader directory\n"
-                  << "\t" << _shader_dir.c_str() << "is not a directory\n";
-        return false;
-    }
-
-    // read file and compile shaders
     GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    fs::directory_iterator s_dir_iter(_shader_dir);
-    for(; s_dir_iter != fs::end(s_dir_iter); ++s_dir_iter) {
-        const fs::path shader_path = s_dir_iter -> path();
-        if(shader_path.extension() == ".vert") {
-            // vertex shader
-            std::cout << log_prefix(log_type::INFO) << "Found " << shader_path << " as a vertex shader\n";
-            // read code
-            std::string vert_src;
-            try{
-                vert_src = internal::read_file_to_str(shader_path);
-            }catch(const std::system_error& e){
-                std::cout << log_prefix(log_type::ERROR) << "Failed to read the file\n"
-                          << "\t" << e.code() << ":" << e.what() << "\n";
-                return false;
-            }
-            const char* vert_src_c_str = vert_src.c_str();
-            // try compile
-            glShaderSource(vertex_shader, 1, &vert_src_c_str, nullptr);
-            glCompileShader(vertex_shader);
+    const char* vert_src_c_str =
+        #include "ShaderSrc/particle_visualizer.vert"
+        ;
+    // try compile
+    glShaderSource(vertex_shader, 1, &vert_src_c_str, nullptr);
+    glCompileShader(vertex_shader);
 
-            int is_success;
-            char info_log[512];
-            glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &is_success);
-            if (!is_success)
-            {
-                glGetShaderInfoLog(vertex_shader, 512, nullptr, info_log);
-                std::cout << log_prefix(log_type::ERROR) << "Failed to compile the shader\n"
-                          << "\t" << info_log << "\n";
-                return false;
-            }
-            std::cout << log_prefix(log_type::INFO) << "Compiled " << shader_path.filename() << "\n";
-        }
-        if(shader_path.extension() == ".frag") {
-            // fragment shader
-            std::cout << log_prefix(log_type::INFO) << "Found " << shader_path << " as a fragment shader\n";
-            std::string frag_src;
-            try{
-                frag_src = internal::read_file_to_str(shader_path);
-            }catch(const std::system_error& e){
-                std::cout << log_prefix(log_type::ERROR) << "Failed to read the file\n"
-                          << "\t" << e.code() << ":" << e.what() << "\n";
-            }
-            const char* frag_src_c_str = frag_src.c_str();
-            // try compile
-            glShaderSource(fragment_shader, 1, &frag_src_c_str, nullptr);
-            glCompileShader(fragment_shader);
-
-            int is_success;
-            char info_log[512];
-            glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &is_success);
-            if (!is_success)
-            {
-                glGetShaderInfoLog(fragment_shader, 512, nullptr, info_log);
-                std::cout << log_prefix(log_type::ERROR) << "Failed to compile the shader\n"
-                          << "\t" << info_log << "\n";
-                return false;
-            }
-            std::cout << log_prefix(log_type::INFO) << "Compiled " << shader_path.filename() << "\n";
-        }
+    int is_success;
+    char info_log[512];
+    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &is_success);
+    if (!is_success)
+    {
+        glGetShaderInfoLog(vertex_shader, 512, nullptr, info_log);
+        std::cout << log_prefix(log_type::ERROR) << "Failed to compile the shader\n"
+                  << "\t" << info_log << "\n";
+        return false;
     }
+    std::cout << log_prefix(log_type::INFO) << "Compiled vertex shader\n";
+
+    const char* frag_src_c_str =
+        #include "ShaderSrc/particle_visualizer.frag"
+        ;
+    // try compile
+    glShaderSource(fragment_shader, 1, &frag_src_c_str, nullptr);
+    glCompileShader(fragment_shader);
+
+    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &is_success);
+    if (!is_success)
+    {
+        glGetShaderInfoLog(fragment_shader, 512, nullptr, info_log);
+        std::cout << log_prefix(log_type::ERROR) << "Failed to compile the shader\n"
+                  << "\t" << info_log << "\n";
+        return false;
+    }
+    std::cout << log_prefix(log_type::INFO) << "Compiled fragment shader\n";
 
     // try to link shader
     m_shader_program = glCreateProgram();
-    {
-        glAttachShader(m_shader_program, vertex_shader);
-        glAttachShader(m_shader_program, fragment_shader);
-
-        int is_success;
-        char info_log[512];
-
-        glLinkProgram(m_shader_program);
-        // check for linking errors
-        glGetProgramiv(m_shader_program, GL_LINK_STATUS, &is_success);
-        if (!is_success) {
-            glGetProgramInfoLog(m_shader_program, 512, nullptr, info_log);
-            std::cout << log_prefix(log_type::ERROR) << "Failed to link shaders\n"
-                      << "\t" << info_log << "\n";
-            return false;
-        }
+    glAttachShader(m_shader_program, vertex_shader);
+    glAttachShader(m_shader_program, fragment_shader);
+    glLinkProgram(m_shader_program);
+    // check for linking errors
+    glGetProgramiv(m_shader_program, GL_LINK_STATUS, &is_success);
+    if (!is_success) {
+        glGetProgramInfoLog(m_shader_program, 512, nullptr, info_log);
+        std::cout << log_prefix(log_type::ERROR) << "Failed to link shaders\n"
+                  << "\t" << info_log << "\n";
+        return false;
     }
+    std::cout << log_prefix(log_type::INFO) << "Linked shaders\n";
 
     // clean up
     glDeleteShader(vertex_shader);
