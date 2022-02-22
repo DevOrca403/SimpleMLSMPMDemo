@@ -15,16 +15,20 @@ add_subdirectory(Externals/glfw)
 
 add_executable (OrcaMLSMPMDemo)
 
-# eigen support
-if(EXISTS "${ROOT}/Externals/eigen/signature_of_eigen3_matrix_library")
-    # local eigen lib detected
+find_package (Eigen3 3.3 NO_MODULE)
+
+if(TARGET Eigen3::Eigen)
+    target_link_libraries (OrcaMLSMPMDemo
+            PRIVATE
+            Eigen3::Eigen
+            )
+elseif(EXISTS ${ROOT}/Externals/eigen/signature_of_eigen3_matrix_library)
     target_include_directories (OrcaMLSMPMDemo
             PRIVATE
-            Externals/eigen)
+            ${ROOT}/Externals/eigen
+    )
 else()
-    find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-    target_link_libraries (OrcaMLSMPMDemo
-            Eigen3::Eigen)
+    message( FATAL_ERROR "Failed to find Eigen3")
 endif()
 
 target_sources (OrcaMLSMPMDemo
