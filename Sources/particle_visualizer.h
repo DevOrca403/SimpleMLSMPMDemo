@@ -1,7 +1,6 @@
 #ifndef ORCAMPMDEMO_PARTICLE_VISUALIZER_H
 #define ORCAMPMDEMO_PARTICLE_VISUALIZER_H
 
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -12,7 +11,6 @@
 #include <GLFW/glfw3.h>
 #include <Eigen/Dense>
 
-namespace fs = std::filesystem;
 using SClock = std::chrono::system_clock;
 
 class particle_visualizer {

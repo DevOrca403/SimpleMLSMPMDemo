@@ -72,20 +72,6 @@ bool particle_visualizer::initialize() {
     return true;
 }
 
-namespace internal {
-    std::string read_file_to_str(const fs::path& _path) {
-        std::string ret;
-        std::ifstream _path_ifs(_path, std::ios::in);
-        std::string line;
-        while(!_path_ifs.eof()) {
-            std::getline(_path_ifs, line);
-            ret.append(line + "\n");
-        }
-        _path_ifs.close();
-        return ret;
-    }
-}
-
 bool particle_visualizer::load_shader() {
     std::cout << log_prefix(log_type::INFO) << "Load shaders\n";
 
