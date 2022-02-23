@@ -46,6 +46,7 @@ target_sources (OrcaMLSMPMDemo
         Sources/particle_system.h)
 
 target_link_libraries (OrcaMLSMPMDemo
+        PRIVATE
         glfw)
 
 target_include_directories (OrcaMLSMPMDemo
