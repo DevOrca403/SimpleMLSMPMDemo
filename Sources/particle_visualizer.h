@@ -1,7 +1,6 @@
 #ifndef ORCAMPMDEMO_PARTICLE_VISUALIZER_H
 #define ORCAMPMDEMO_PARTICLE_VISUALIZER_H
 
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -12,14 +11,13 @@
 #include <GLFW/glfw3.h>
 #include <Eigen/Dense>
 
-namespace fs = std::filesystem;
 using SClock = std::chrono::system_clock;
 
 class particle_visualizer {
 public:
     particle_visualizer() = default;
     bool initialize();
-    bool load_shader(const fs::path& _shader_dir);
+    bool load_shader();
     void init_buffer();
     template<class PositionIter, class ValueIter>
     void render(PositionIter _pos_begin, PositionIter _pos_end,

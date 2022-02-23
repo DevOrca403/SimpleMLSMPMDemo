@@ -3,6 +3,8 @@ project(OrcaMLSMPMDemo)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(ROOT ${PROJECT_SOURCE_DIR})
+
 # glfw
 # disable glfw test build.
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -11,10 +13,26 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(Externals/glfw)
 
-find_package(OpenGL REQUIRED)
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+add_executable (OrcaMLSMPMDemo)
 
-add_executable (OrcaMLSMPMDemo
+find_package (Eigen3 3.3 NO_MODULE)
+
+if(TARGET Eigen3::Eigen)
+    target_link_libraries (OrcaMLSMPMDemo
+            PRIVATE
+            Eigen3::Eigen
+            )
+elseif(EXISTS ${ROOT}/Externals/eigen/signature_of_eigen3_matrix_library)
+    target_include_directories (OrcaMLSMPMDemo
+            PRIVATE
+            ${ROOT}/Externals/eigen
+    )
+else()
+    message( FATAL_ERROR "Failed to find Eigen3")
+endif()
+
+target_sources (OrcaMLSMPMDemo
+        PRIVATE
         Externals/glad/include/glad/glad.h
         Externals/glad/src/glad.c
         Sources/main.cpp
@@ -28,8 +46,7 @@ add_executable (OrcaMLSMPMDemo
         Sources/particle_system.h)
 
 target_link_libraries (OrcaMLSMPMDemo
-        Eigen3::Eigen
-        OpenGL::GL
+        PRIVATE
         glfw)
 
 target_include_directories (OrcaMLSMPMDemo

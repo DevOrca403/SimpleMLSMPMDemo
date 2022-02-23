@@ -23,7 +23,7 @@ int main() {
     if(!pv.initialize()) {
         abort();
     }
-    if(!pv.load_shader("/home/orca/CLionProjects/OrcaMLSMPMDemo/Sources/ShaderSrc")) {
+    if(!pv.load_shader()) {
         abort();
     }
     pv.init_buffer();
