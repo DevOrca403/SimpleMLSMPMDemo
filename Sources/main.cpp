@@ -33,19 +33,31 @@ int main() {
 
 
 
-    const std::string pixel_data = "EEEEEEEEEEEEEEEEEEEEE######EEEE\n"
-                                   "EEEEEEEEEEEEEEEEEEEE##EEEE##EEE\n"
-                                   "EEEEEEEEEEEEEEEEEEEE#EEEEEE##EE\n"
-                                   "EEEEEEEEEEEEEEEEEE####EEEEE##EE\n"
-                                   "EEEEEEEEEEEEEEEE#######EEEEEEEE\n"
-                                   "EEEEEEEEEEEEE###########EEEEEEE\n"
-                                   "EEEEEEEEEE###############EEEEEE\n"
-                                   "EEEEEEEEE#################EEEEE\n"
-                                   "EEEEEEEEE#################EEEEE\n"
-                                   "EEEEEEEEE#################EEEEE\n"
-                                   "EEEEEEEEE#################EEEEE\n"
-                                   "EEEEEEEEEE###############EEEEEE\n"
-                                   "EEEEEEEEEEE#############EEEEEEE\n";
+    const std::string pixel_data =
+        "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n"
+        "EEEEEEEEEEEEEEEEEEEE#####EEEEE\n"
+        "EEEEEEEEEEEEEEEEEE########E#EE\n"
+        "EEEEEEEEEEEEEEEEE####EEE#####E\n"
+        "EEEEEEEEEEEEEEEEE##EEEEEEE###E\n"
+        "EEEEEEEEEEEEEEEE###EEEEEEEE#EE\n"
+        "EEEEEEEEEEEEEEE#####EEEEEEEEEE\n"
+        "EEEEEEEEEEEEEE######EEEEEEEEEE\n"
+        "EEEEEEEEEEEE##########EEEEEEEE\n"
+        "EEEEEEEEE##############EEEEEEE\n"
+        "EEEEEEE#################EEEEEE\n"
+        "EEEEEE###################EEEEE\n"
+        "EEEEE#####################EEEE\n"
+        "EEEEE#####################EEEE\n"
+        "EEEEE#####################EEEE\n"
+        "EEEE######################EEEE\n"
+        "EEEE######################EEEE\n"
+        "EEEE######################EEEE\n"
+        "EEEEE#####################EEEE\n"
+        "EEEEE####################EEEEE\n"
+        "EEEEEE###################EEEEE\n"
+        "EEEEEEE#################EEEEEE\n"
+        "EEEEEEEE##############EEEEEEEE\n"
+        "EEEEEEEEEE#########EEEEEEEEEEE\n";
 
     int initial_x = 20;
     int _x = 20;
