@@ -10,7 +10,7 @@
 #include "pg_transfer.h"
 
 // material properties
-const float E = 0.8e4f;          // Young's Modulus
+const float E = 0.3e3f;          // Young's Modulus
 const float nu = 0.40f;         // Poisson ratio
 const float time_delta = 0.0005f;
 
@@ -30,7 +30,38 @@ int main() {
 
     grid g;
     particle_system ps;
-    ps.add_block(50, 20, 20, 20, {0.0f, -2.0f}, g.get_cell_space());
+
+
+
+    const std::string pixel_data = "EEEEEEEEEEEEEEEEEEEEE######EEEE\n"
+                                   "EEEEEEEEEEEEEEEEEEEE##EEEE##EEE\n"
+                                   "EEEEEEEEEEEEEEEEEEEE#EEEEEE##EE\n"
+                                   "EEEEEEEEEEEEEEEEEE####EEEEE##EE\n"
+                                   "EEEEEEEEEEEEEEEE#######EEEEEEEE\n"
+                                   "EEEEEEEEEEEEE###########EEEEEEE\n"
+                                   "EEEEEEEEEE###############EEEEEE\n"
+                                   "EEEEEEEEE#################EEEEE\n"
+                                   "EEEEEEEEE#################EEEEE\n"
+                                   "EEEEEEEEE#################EEEEE\n"
+                                   "EEEEEEEEE#################EEEEE\n"
+                                   "EEEEEEEEEE###############EEEEEE\n"
+                                   "EEEEEEEEEEE#############EEEEEEE\n";
+
+    int initial_x = 20;
+    int _x = 20;
+    int _y = 30;
+    for (char _c : pixel_data) {
+        if(_c == '#') {
+            ps.add_four_particles_in_cell(_x, _y, g.get_cell_space());
+            ++_x;
+        }else if(_c == '\n') {
+            --_y;
+            _x = initial_x;
+        }else {
+            ++_x;
+        }
+    }
+    //ps.add_block(50, 20, 20, 20, {0.0f, -2.0f}, g.get_cell_space());
 
     // buffers for interpolation
     std::vector<std::array<Vector2f, 3>> weights(ps.size());
@@ -76,7 +107,7 @@ int main() {
             render_buffer_pos[2 * i] = ps.position[i].x() * 2.0f - 1.0f;
             render_buffer_pos[2 * i + 1] = ps.position[i].y() * 2.0f - 1.0f;
 
-            render_buffer_value[i] = ps.stress[i].squaredNorm()/700.0f;
+            render_buffer_value[i] = ps.stress[i].squaredNorm()/20.0f;
         }
 
         pv.render(render_buffer_pos.begin(), render_buffer_pos.end(), render_buffer_value.begin());
