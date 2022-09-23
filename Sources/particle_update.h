@@ -14,23 +14,24 @@ using namespace Eigen;
  * @param _stress_dest First destination of stress * volume updates
  * @param _len Length of inputs (i.e. number of particles)
  */
-void update_stress(Matrix2f* _deform_grad_begin,
-                   float _lame_mu, float _lame_lambda,
-                   Matrix2f* _stress_dest,
+void update_stress(Matrix3f* _deform_grad_begin,
+                   float _lame_mu,
+                   float _lame_lambda, 
+                   Matrix3f* _stress_dest,
                    size_t _len) {
     for (int loop = 0; loop < _len; ++loop, ++_deform_grad_begin, ++_stress_dest) {
-        Matrix2f F = (*_deform_grad_begin);
+        const Matrix3f& F = (*_deform_grad_begin);
         float J = (*_deform_grad_begin).determinant();
 
         // Polar SVD for co-rotated model
-        Matrix2f F_rotate;
+        Matrix3f F_rotate;
         {
-            JacobiSVD<MatrixXf> svd(F,ComputeFullU | ComputeFullV);
+            JacobiSVD<Matrix3f> svd(F,ComputeFullU | ComputeFullV);
             F_rotate = svd.matrixU() * svd.matrixV().transpose();
         }
         // Cauchy stress times volume
-        Matrix2f stress =
-                (2.0f * _lame_mu * (F - F_rotate) * (F).transpose()) + (_lame_lambda * (J - 1) * J * Matrix2f::Identity());
+        Matrix3f stress =
+                (2.0f * _lame_mu * (F - F_rotate) * (F).transpose()) + (_lame_lambda * (J - 1) * J * Matrix3f::Identity());
         (*_stress_dest) = stress;
     }
 }
@@ -42,9 +43,9 @@ void update_stress(Matrix2f* _deform_grad_begin,
  * @param _p_pos_dest First of previous particle positions and destination of the updated.
  * @param _len Length of inputs (i.e. number of particles)
  */
-void update_position(Vector2f* _p_vel_begin,
-                     float _time_delta,
-                     Vector2f* _p_pos_dest,
+void update_position(Vector3f* _p_vel_begin,
+                     float _time_delta, 
+                     Vector3f * _p_pos_dest,
                      size_t _len) {
     for (int loop = 0; loop < _len; ++loop, ++_p_vel_begin, ++_p_pos_dest) {
         (*_p_pos_dest) += (*_p_vel_begin) * _time_delta;
@@ -57,12 +58,12 @@ void update_position(Vector2f* _p_vel_begin,
  * @param _deform_grad_dest First of previous deformation gradients and destination of the updated
  * @param _len Length of inputs (i.e. number of particles)
  */
-void update_deformation_gradient(Matrix2f* _p_affine_begin,
-                                 float _time_delta,
-                                 Matrix2f* _deform_grad_dest,
+void update_deformation_gradient(Matrix3f* _p_affine_begin,
+
+                                 float _time_delta, Matrix3f* _deform_grad_dest,
                                  size_t _len) {
     for (int loop = 0; loop < _len; ++loop, ++_p_affine_begin, ++_deform_grad_dest) {
-        (*_deform_grad_dest) *= (Matrix2f::Identity() + _time_delta * (*_p_affine_begin));
+        (*_deform_grad_dest) *= (Matrix3f::Identity() + _time_delta * (*_p_affine_begin));
     }
 }
 

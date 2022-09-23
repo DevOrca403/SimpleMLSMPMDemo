@@ -14,15 +14,15 @@
 class grid {
 public:
     template<class DataType>
-    using NodalData = std::array<std::array<DataType, GRID_RESOLUTION>, GRID_RESOLUTION>;
+    using NodalData = std::array<std::array<std::array<DataType, GRID_RESOLUTION>, GRID_RESOLUTION>, GRID_RESOLUTION>;
     template<class DataType>
     using UPtrNodalData = std::unique_ptr<NodalData<DataType>>;
 
-    [[nodiscard]] NodalData<Eigen::Vector2f>& momentum() const;
+    [[nodiscard]] NodalData<Eigen::Vector3f>& momentum() const;
 
     [[nodiscard]] NodalData<float>& mass() const;
 
-    [[nodiscard]] NodalData <Eigen::Vector2f>& velocity() const;
+    [[nodiscard]] NodalData <Eigen::Vector3f>& velocity() const;
 
     void reset();
 
@@ -35,9 +35,9 @@ public:
     [[nodiscard]] static constexpr int get_resolution() ;
     [[nodiscard]] static constexpr float get_cell_space() ;
 private:
-    UPtrNodalData<Eigen::Vector2f> m_momentum;
+    UPtrNodalData<Eigen::Vector3f> m_momentum;
     UPtrNodalData<float> m_mass;
-    UPtrNodalData<Eigen::Vector2f> m_velocity;
+    UPtrNodalData<Eigen::Vector3f> m_velocity;
 };
 
 constexpr int grid::get_resolution() {
