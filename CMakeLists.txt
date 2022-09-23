@@ -39,7 +39,8 @@ target_sources (OrcaMLSMPMDemo
         Sources/particle_visualizer.cpp
         Sources/particle_visualizer.h
         Sources/grid.cpp
-        Sources/grid.h Sources/function.h
+        Sources/grid.h 
+        Sources/function.h
         Sources/particle_update.h
         Sources/pg_transfer.h
         Sources/particle_system.cpp
