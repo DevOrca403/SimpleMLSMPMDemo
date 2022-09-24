@@ -44,13 +44,19 @@ target_sources (OrcaMLSMPMDemo
         Sources/particle_update.h
         Sources/pg_transfer.h
         Sources/particle_system.cpp
-        Sources/particle_system.h)
+        Sources/particle_system.h 
+
+        Externals/glm/glm.hpp
+)
 
 target_link_libraries (OrcaMLSMPMDemo
         PRIVATE
-        glfw)
+        glfw
+)
 
 target_include_directories (OrcaMLSMPMDemo
         PRIVATE
         Externals/glad/include
-        Externals/glfw/include)
+        Externals/glfw/include
+        Externals/glm
+)
